@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const divide = require('../index');
+const { divide } = require('../index');
 
 describe('divide function', () => {
   
