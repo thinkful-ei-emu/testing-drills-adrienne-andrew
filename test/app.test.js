@@ -42,6 +42,7 @@ describe('GET /frequency', () => {
   it('should return 400 if given no query', () => {
     return request(app)
       .get('/frequency')
+      .query({})
       .expect(400, 'Invalid Request');
   });
 
@@ -56,6 +57,13 @@ describe('GET /frequency', () => {
         expect(res.body).to.include.all.keys(
           'unique', 'average', 'highest', 'a', 'b'
         )
+        expect(res.body).to.eql({
+          unique: 2,
+          average: 5,
+          highest: 'a',
+          'a': 6,
+          'b': 4
+        })
       })
   });
 });
