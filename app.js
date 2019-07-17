@@ -4,19 +4,25 @@ const app = express();
 
 app.use(morgan('common'));
 
+/**
+ * HOME
+ */
 app.get('/', (req, res) => {
   res.send('Hello Express!');
 });
 
+/**
+ * SUM 
+ */
 app.get('/sum', (req, res) => {
   const { a, b } = req.query;
-  if(!a) {
+  if (!a) {
     return res
       .status(400)
       .send('Value for a is needed');
   }
 
-  if(!b) {
+  if (!b) {
     return res
       .status(400)
       .send('Value for b is needed');
@@ -25,19 +31,19 @@ app.get('/sum', (req, res) => {
   const numA = parseFloat(a);
   const numB = parseFloat(b);
 
-  if(Number.isNaN(numA)) {
+  if (Number.isNaN(numA)) {
     return res
       .status(400)
       .send('Value for a must be numeric');
   }
 
-  if(Number.isNaN(numB)) {
+  if (Number.isNaN(numB)) {
     return res
       .status(400)
       .send('Value for b must be numeric');
   }
 
-  if(numB == 0) {
+  if (numB == 0) {
     return res
       .status(400)
       .send('Cannot divide by 0');
@@ -48,6 +54,48 @@ app.get('/sum', (req, res) => {
   res
     .send(`${a} divided by ${b} is ${ans}`);
 
+});
+
+/**
+ * FREQUENCY
+ */
+app.get('/frequency', (req, res) => {
+  const { s } = req.query;
+
+  if (!s) {
+    return res
+      .status(400)
+      .send('Invalid Request');
+  }
+
+  const counts = s
+    .toLowerCase()
+    .split('')
+    .reduce((acc, curr) => {
+      if (acc[curr]) {
+        acc[curr]++;
+      } else {
+        acc[curr] = 1;
+      }
+      return acc;
+    }, {});
+
+  const unique = Object.keys(counts).length;
+  const average = s.length / unique;
+  let highest = '';
+  let highestVal = 0;
+
+  Object.keys(counts).forEach(k => {
+    if (counts[k] > highestVal) {
+      highestVal = counts[k];
+      highest = k;
+    }
+  });
+
+  counts.unique = unique;
+  counts.average = average;
+  counts.highest = highest;
+  res.json(counts);
 });
 
 module.exports = app;
